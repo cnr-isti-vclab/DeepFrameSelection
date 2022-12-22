@@ -74,8 +74,7 @@ def writePLY(name_file):
              if c > 2:
                 lst = x.split(" ", 7)
              
-                file_out.write(lst[1] + " " + lst[2] + " " + lst[3] + " " +
-                               lst[4] + " " + lst[5] + " " + lst[6] + " " + lst[7]"\n")
+                file_out.write(lst[1] + " " + lst[2] + " " + lst[3] + " " + lst[4] + " " + lst[5] + " " + lst[6] + " " + lst[7] + "\n")
              c += 1
     file.close()
 
