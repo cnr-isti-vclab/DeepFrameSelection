@@ -25,13 +25,7 @@ To run our metric on a video (MP4) or a folder of images (e.g., PNGs or JPEGs), 
 Testing DFS on videos:
 
 ```
-python3 norvdpnetpp.py test.mp4
-```
-
-Testing on a folder of .jpg files:
-
-```
-python3 dfs.py 
+python3 dfs.py video.mp4
 ```
 
 WEIGHTS DOWNLOAD:
