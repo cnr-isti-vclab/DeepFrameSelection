@@ -8,14 +8,14 @@ Deep Frame Selection (DFS) is a deep-learning based metric for selecting frames 
 DEPENDENCIES:
 ==============
 
-Requires the PyTorch library along with Image, NumPy, SciPy, Matplotlib, glob2, pandas, and scikit-learn.
+Requires the PyTorch library along with Pillow, NumPy, tqdm, Matplotlib, glob2, pandas, and scikit-learn.
 
 As the first step, you need to follow the [instructions for installing PyTorch](http://pytorch.org/).
 
 To install dependencies, please use the following command: 
 
 ```bash
-pip3 install numpy, scipy, matplotlib, glob2, pandas, image, scikit-learn, opencv-python. 
+pip3 install numpy, matplotlib, tqdm, glob2, pandas, pillow, scikit-learn, opencv-python. 
 ```
 
 HOW TO RUN IT:
