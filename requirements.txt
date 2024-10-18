@@ -1,0 +1,13 @@
+torch==2.1.2
+glob2==0.7
+opencv-python==4.6.0
+Pillow==9.2.0
+numpy==1.24.3
+pandas==1.4.3
+seaboarn==0.11.2
+tqdm==4.64.0
+matplotlib==3.5.2
+torchvision==0.16.2
+scikit-image==0.20.0
+scikit-learn==1.3.0
+matplotlib==3.7.2

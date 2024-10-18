@@ -15,7 +15,7 @@ As the first step, you need to follow the [instructions for installing PyTorch](
 To install dependencies, please use the following command: 
 
 ```bash
-pip3 install numpy, matplotlib, tqdm, glob2, torchvision, pandas, pillow, scikit-image, scikit-learn, opencv-python. 
+pip install -r requirements.txt
 ```
 
 HOW TO RUN IT:
