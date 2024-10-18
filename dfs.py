@@ -119,7 +119,7 @@ if __name__ == '__main__':
                    index = i * fps + j
                    
                    if bVideo:
-                        success, frame = video_obj.getNextFrameWithIndex(index, bPIL = False)
+                        success, frame = video_obj.getNextFrameWithIndex(index, True, False)
                                             
                         if success:
                             fn = 'frame_' + str(index) + '.png';
@@ -135,7 +135,7 @@ if __name__ == '__main__':
                lap_vec = []
                for j in range(0, fps):
                    index = i * fps + j
-                   success, frame = video_obj.getNextFrameWithIndex(index, bPIL = False)
+                   success, frame = video_obj.getNextFrameWithIndex(index, True, False)
                    if success:
                        success, value = checkLaplaicanBluriness(frame, 0.0009)
                        lap_vec.append(value)
@@ -143,10 +143,11 @@ if __name__ == '__main__':
                #second pass
                indices = np.argsort(lap_vec)
                 
-               start = int(fps - n_frames)
-               for j in range(start, fps):
-                   index = indices[j]
-                   success, frame = video_obj.getNextFrameWithIndex(index, bPIL = False)
+               n = len(lap_vec)
+               start = int(n - n_frames)
+               for j in range(start, n):
+                   index = i * fps + indices[j]
+                   success, frame = video_obj.getNextFrameWithIndex(index, True, False)
                    if success:
                        fn = 'frame_' + str(i * fps + index) + '.png';
                        fn_full = os.path.join(output_dir, fn)

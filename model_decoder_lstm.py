@@ -45,7 +45,7 @@ class DecoderLSTM(nn.Module):
         z = out[:, -1, :]
         y = self.f(z)
 
-        if self.training:
+        if not self.training:
             y = y.clamp(0.0, 1.0)
 
         y = y.squeeze(0)

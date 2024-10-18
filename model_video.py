@@ -58,7 +58,7 @@ class ModelVideo(nn.Module):
                 
                 bCuda = torch.cuda.is_available() # do we have a CUDA GPU?
                 device = torch.device("cuda" if bCuda else "cpu")
-                ckpt = torch.load(ckpt, map_location = device)
+                ckpt = torch.load(ckpt, map_location = device, weights_only=True )
 
                 c0 = ckpt['cnn_model']
                 
