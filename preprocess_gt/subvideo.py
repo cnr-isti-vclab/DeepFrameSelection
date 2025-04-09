@@ -5,15 +5,15 @@
 
 import os
 import sys
+import cv2
+
 import util_ip as ipt
 from video import *
-import cv2
 
 #
 #
 #
 def processOneVideo(name_video, sampling):
-
     print('Processing video ' + name_video)
 
     name = os.path.splitext(name_video)[0]
@@ -25,12 +25,17 @@ def processOneVideo(name_video, sampling):
     bFirst = True
     for i in range(0, (n - sampling), sampling):
         success, frame, i_k = v_in.getNextFrame(i, False)
+        
+        frame = frame.astype('float32')
+        
         if success:
             name_out = name + '_s_' + str(sampling) + '_' + '{0:06d}'.format(i) + '.png'
+
+            success, value = ipt.checkLaplaicanBluriness(frame, 99.0)
             
-            cv2.imwrite(name_out, frame)
+            if success:
+                cv2.imwrite(name_out, frame)
         
-    v_out.release()
     v_in.release()
 
 
