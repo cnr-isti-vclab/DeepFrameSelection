@@ -7,6 +7,7 @@ import os
 import sys
 import util_ip as ipt
 from video import *
+import cv2
 
 #
 #
@@ -22,26 +23,12 @@ def processOneVideo(name_video, sampling):
     n = v_in.getNumFrames()
     
     bFirst = True
-    for i in range(0, (n-sampling), sampling):
+    for i in range(0, (n - sampling), sampling):
         success, frame, i_k = v_in.getNextFrame(i, False)
-        frame = frame.astype(float)
         if success:
-            if bFirst:
-                shape = frame.shape
-                name_out = name + '_s_' + str(sampling) + '.mp4'
-                print(name_out)
-                v_out = createVideo(name_out, shape[1], shape[0])
-                bFirst = False
-            for j in range(0, sampling):
-                success_j, frame_j, j_k = v_in.getNextFrame(i+j, False)
-                frame_j = frame_j.astype(float)
-
-                frame += frame_j
+            name_out = name + '_s_' + str(sampling) + '_' + '{0:06d}'.format(i) + '.png'
             
-            if sampling > 1:
-                frame /= sampling
-                
-            v_out.write(frame.astype(np.uint8))
+            cv2.imwrite(name_out, frame)
         
     v_out.release()
     v_in.release()
@@ -68,13 +55,13 @@ if __name__ == "__main__":
     folder = sys.argv[1]
     sampling = int(sys.argv[2])
 
-    list = ['.mp4', '.MP4', '.mov', '.MOV', '.asf', '.ASF']
-    fmt = os.path.splitext(folder)[1]
+    list = ['.mp4', '.mov', '.asf']
+    fmt = os.path.splitext(folder)[1].lower()
 
     if fmt in list:
         processOneVideo(folder, sampling)
     else:
-        videos = [v for v in os.listdir(folder) if v.endswith('.MP4')]
+        videos = [v for v in os.listdir(folder) if v.lower().endswith('.mp4')]
         for v in videos:
             processOneVideo(os.path.join(folder, v),sampling)
     

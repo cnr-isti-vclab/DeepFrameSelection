@@ -157,8 +157,6 @@ if __name__ == "__main__":
     if os.path.splitext(folder)[1].lower() in list:
         processOneVideo(folder, [], sampling, target)
     else:
-        videos = [v for v in os.listdir(folder) if v.lower(endswith('.mp4'))]
-        for v in videos:    
+        videos = [v for v in os.listdir(folder) if v.lower().endswith('.mp4')]
+        for v in videos:
             processOneVideo(os.path.join(folder, v), [], sampling, target)
-    
-
