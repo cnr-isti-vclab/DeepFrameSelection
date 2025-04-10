@@ -107,6 +107,8 @@ if __name__ == '__main__':
     else:
         sys.exit()
 
+    fid = open(os.path.join(args_data, 'selected.txt'), 'w')
+    
     #copy selected frames in data_selected folder
     for i in range(0, len(vec)):
         n_frames = vec[i]
@@ -117,12 +119,13 @@ if __name__ == '__main__':
            if bRegular:
                for j in range(0, fps, sampling_factor):
                    index = i * fps + j
+                   fid.write(str(index) + '\n')
                    
                    if bVideo:
                         success, frame = video_obj.getNextFrameWithIndex(index, True, False)
                                             
                         if success:
-                            fn = 'frame_' + str(index) + '.png';
+                            fn = 'frame_' + '{0:06d}'.format(index) + '.png';
                             fn_full = os.path.join(output_dir, fn)
                             fromNPtoPIL(frame).save(fn_full)
                    else:
@@ -147,12 +150,13 @@ if __name__ == '__main__':
                start = int(n - n_frames)
                for j in range(start, n):
                    index = i * fps + indices[j]
+                   fid.write(str(index) + '\n')
+                   
                    success, frame = video_obj.getNextFrameWithIndex(index, True, False)
                    if success:
-                       fn = 'frame_' + str(i * fps + index) + '.png';
+                       fn = 'frame_' + '{0:06d}'.format(i * fps + index) + '.png';
                        fn_full = os.path.join(output_dir, fn)
                        fromNPtoPIL(frame).save(fn_full)
                 
-                
-
+    fid.close()
 
