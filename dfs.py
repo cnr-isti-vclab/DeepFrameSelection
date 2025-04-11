@@ -154,7 +154,7 @@ if __name__ == '__main__':
                    
                    success, frame = video_obj.getNextFrameWithIndex(index, True, False)
                    if success:
-                       fn = 'frame_' + '{0:06d}'.format(i * fps + index) + '.png';
+                       fn = 'frame_' + '{0:06d}'.format(index) + '.png';
                        fn_full = os.path.join(output_dir, fn)
                        fromNPtoPIL(frame).save(fn_full)
                 
