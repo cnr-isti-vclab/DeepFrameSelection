@@ -5,7 +5,7 @@
 
 import os
 import cv2
-from util_ip import *
+from preprocess_gt.util_ip import *
 
 #
 #
@@ -15,13 +15,6 @@ def createVideo(filename, width, height, fps = 30.0):
     fourcc = cv2.VideoWriter_fourcc(*'MP4V')
     out = cv2.VideoWriter(filename, fourcc, fps, (width, height))
     return out
-
-#
-#
-#
-def mkdir_s(output_dir):
-    if os.path.isdir(output_dir) == False:
-       os.mkdir(output_dir)
 
 #
 #
@@ -82,6 +75,7 @@ class Video:
     #
     #
     def getNextFrame(self, frame = -1, bBGR = True):
+        print("A")
         self.setFrame(frame)
         
         counter = self.counter

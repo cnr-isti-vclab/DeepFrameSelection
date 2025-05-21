@@ -5,57 +5,56 @@
 
 import os
 import sys
-import util_ip as ipt
-from video import *
+
+from util.util_ip import *
+from util.video import *
 
 #
 #
 #
-def cleanSequence(video_obj, shift_threshold = 8, bBGR = False, bSave = True, folder_out = 'images', name_base = 'frame'):
+def cleanSequence(video_obj, shift_threshold = 16, bBGR = False, bWrite = True, folder_out = 'images', name_base = 'frame'):
+
+    if bWrite:
+        mkdir_s(folder_out)
 
     c = 0
     n = video_obj.n
     print('Total frames: ' + str(n))
    
-    id_list = []
     lst = []
-    
-    lap = False
-    threshold = 15.0
-    while lap == False:
-        success, img, j = video_obj.getNextFrame()
-        if (success == False) or (j >= (n - 1)):
-            break
-        lap, value = checkLaplaicanBluriness(img, threshold)
-    lst.append(j)
-    
-    if bSave:
-        writeCV2(img / 255.0, folder_out + '/' + name_base + '_' + format(j,'06d') + '.jpg')
 
     if shift_threshold < 0:
         shape_max = np.max(img.shape)
-        shift_threshold = np.max([8, np.round(shape_max / 40.0)])
+        shift_threshold = np.max([16, np.round(shape_max / 40.0)])
 
     print('Threshold: ' + str(shift_threshold))
     
+    j = 0
+    
+    success, img, k = video_obj.getNextFrame(bPIL = False)
+    
     while(j < (n - 1)):
-        
         lap = False
         while (lap == False):
-            success, img_n, k = video_obj.getNextFrame()
+            success, img_n, k = video_obj.getNextFrame(bPIL = False)
             if (success == False) or (k >= (n - 1)):
                 j = n + 1
                 break
-            lap, value = checkLaplaicanBluriness(img_n, threshold)
+                
+            lap, value = checkKeyPointBluriness(img_n)
+            
+            if lap == False:
+                j += 1
+                print('Removed ' + format(j, '06d'))
 
         if success:
             removed_str = ' removed '
-            bTest1, ssim = ipt.checkSimilarity(img, img_n, 0.925, bBGR)
+            bTest1, ssim = checkSimilarity(img, img_n, 0.925, bBGR)
             tmp = " "
             
             if(bTest1 == False):
         
-                bTest2, shift = ipt.checkMTB(img, img_n, shift_threshold, bBGR)
+                bTest2, shift = checkMTB(img, img_n, shift_threshold, bBGR)
                 tmp += "Shift: " + str(shift) + " "
 
                 if(bTest2 == False):
@@ -64,8 +63,8 @@ def cleanSequence(video_obj, shift_threshold = 8, bBGR = False, bSave = True, fo
                     lst.append(k)
                     removed_str = ' kept '
                     
-                    if bSave:
-                        writeCV2(img_n / 255.0, folder_out + '/' + name_base + '_' + format(j,'06d') + '.jpg')
+                    if bWrite:
+                        writeCV2(img_n / 255.0, folder_out + '/'+ name_base+'_' + format(j,'06d') + '.png')
 
             print('Ref: ' + str(j) + ' Cur: ' + str(k) + removed_str + " SSIM: " + str(ssim) + tmp)
 
@@ -113,7 +112,7 @@ def processOneVideo(name_video, folder_out = [], sampling = -1, iTarget = -1):
                 j = lst[i]
                 success, frame, j_k = v.getNextFrame(j, True)
                 if success:
-                    writeCV2(frame / 255.0, folder_out + '/' + name_base + '_' + format(j,'06d') + '.jpg')
+                    writeCV2(frame / 255.0, folder_out + '/' + name_base + '_' + format(j,'06d') + '.png')
     else:
         n = v.getNumFrames()
         for i in range(0, (n - sampling), sampling):
@@ -133,7 +132,7 @@ def processOneVideo(name_video, folder_out = [], sampling = -1, iTarget = -1):
                     frame = np.clip(frame, 0.0, 1.0)
         
             if success:
-                writeCV2(frame, folder_out + '/' + name_base + '_' + format(i,'06d') + '.jpg')
+                writeCV2(frame, folder_out + '/' + name_base + '_' + format(i,'06d') + '.png')
         
     v.release()
     

@@ -7,8 +7,8 @@ import os
 import sys
 import cv2
 
-import util_ip as ipt
-from video import *
+import util.util_ip as ipt
+from util.video import *
 
 #
 #

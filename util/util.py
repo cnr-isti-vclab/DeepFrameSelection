@@ -4,14 +4,23 @@
 #
 
 import os
-import torch
-import numpy as np
-import matplotlib.pyplot as plt
-from PIL import Image
-import PIL
-import torchvision.transforms as transforms
 import sys
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+import torch
+import torchvision.transforms as transforms
+
+from PIL import Image
+
+#
+#
+#
+def mkdir_s(output_dir):
+    if os.path.isdir(output_dir) == False:
+       os.mkdir(output_dir)
+       
 #
 #
 #
@@ -189,7 +198,7 @@ def batchResizeLDRFolder(images_dir, scale, format_in, format_out):
         fn, fe = os.path.splitext(filename)
         img = Image.open(filename_full)
         (width, height) = (img.width // scale, img.height // scale)
-        img = img.resize((width, height), resample = PIL.Image.LANCZOS)
+        img = img.resize((width, height), resample = Image.LANCZOS)
         
         img.save(os.path.join(folder_out, fn + '.' + format_out))
 

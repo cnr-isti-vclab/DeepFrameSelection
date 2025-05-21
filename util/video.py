@@ -4,15 +4,15 @@
 #
 
 import os
+import threading
 import sys
+
 import numpy as np
 import cv2
 import torch
 from torchvision.transforms.functional import to_tensor
-from PIL import Image
-import threading
 
-from util import *
+from util.util import *
 
 #
 #
@@ -50,25 +50,35 @@ class Video:
         self.counter = frame % self.n
         self.v.set(cv2.CAP_PROP_POS_FRAMES, self.counter)
 
-    def getNextFrame(self, bBGR=True):
+    def getNextFrame(self, bBGR=True, bPIL = True):
         if self.bVideo:
             success, frame_cv = self.v.read()
             if success:
-                frame = fromNPtoPIL(fromVideoFrameToNP(frame_cv, bBGR))
+                if bPIL:
+                    frame = fromNPtoPIL(fromVideoFrameToNP(frame_cv, bBGR))
+                else:
+                    if success and bBGR:
+                        frame = np.zeros(frame_cv.shape, dtype = np.float32)
+                        frame[:,:,0] = frame_cv[:,:,2]
+                        frame[:,:,1] = frame_cv[:,:,1]
+                        frame[:,:,2] = frame_cv[:,:,0]
+                    else:
+                        frame = frame_cv
             else:
                 frame = []
+            self.counter = (self.counter + 1) % self.n
         else:
             path = os.path.join(self.video_path, self.total_names[self.counter])
-            frame = imread(path)
+            frame = cv2.imread(path)
             self.counter = (self.counter + 1) % self.n
             success = True
 
-        return success, frame
+        return success, frame, self.counter
         
     #
     #
     #
-    def getNextFrameWithIndex(self, index, bBGR=True, bPIL = True):
+    def getNextFrameWithIndex(self, index, bBGR = True, bPIL = True):
         index = index % self.n
         
         if self.bVideo:
@@ -85,9 +95,11 @@ class Video:
                 frame = []
         else:
             path = os.path.join(self.video_path, self.total_names[index])
-            frame = Image.open(path)
-            if not bPIL:
-                frame = fromPILtoNP(frame)
+            frame = cv2.imread(path)
+            if bPIL:
+                frame = fromNPtoPIL(frame)
+            else:
+                frame = frame.astype(np.float32) / 255.0
             success = True
 
         return success, frame
@@ -95,10 +107,15 @@ class Video:
     #
     #
     #
-    def readBlockFromVideo(self, index, use_transform, differential, fps = 30):
+    def readBlockFromVideo(self, index, use_transform, differential, fps = 30, lst = []):
         X = []
         for i in range(0, fps):
-            success, frame = self.getNextFrameWithIndex(index + i)
+        
+            if lst == []:
+                success, frame = self.getNextFrameWithIndex(index + i)
+            else:
+                success, frame = self.getNextFrameWithIndex(lst[index + i])
+
             if success:
                 if use_transform is not None:
                     frame = use_transform(frame)

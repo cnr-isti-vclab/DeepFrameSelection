@@ -6,7 +6,8 @@
 import os
 import sys
 import time
-from video import *
+
+from util.video import *
 
 #
 #

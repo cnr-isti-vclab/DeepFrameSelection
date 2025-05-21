@@ -5,7 +5,7 @@
 
 import numpy as np
 import cv2
-from skimage.transform import rescale, resize, downscale_local_mean
+
 from skimage.metrics import structural_similarity as ssim
 
 #
@@ -71,8 +71,20 @@ def checkMTB(img1, img2, thr = 4, bBGR = False):
 #
 #
 #
-def checkLaplaicanBluriness(img, thr = 100.0):
-    L = luma(img)
+def checkKeyPointBluriness(img, thr = 16, bBGR = False):
+    gray = luma(img, bBGR)
+    gray_u8 = fromFloatToUint8(gray)
+    orb = cv2.ORB_create()
+    kp = orb.detect(gray_u8, None)
+    len_kp = len(kp)
+    kp, des = orb.compute(img, kp)
+    return (len_kp >= thr), len_kp
+
+#
+#
+#
+def checkLaplaicanBluriness(img, thr = 100.0, bBGR = False):
+    L = luma(img, bBGR)
     value = cv2.Laplacian(L, cv2.CV_32F).var()
     return (value > thr), value
 

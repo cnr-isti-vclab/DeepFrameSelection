@@ -21,7 +21,7 @@ import seaborn as sns
 
 from model_video import *
 from dataloader import *
-from util import *
+from util.util import *
 
 #
 #training function
